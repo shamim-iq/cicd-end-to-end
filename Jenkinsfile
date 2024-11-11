@@ -59,7 +59,7 @@ pipeline {
                             sh '''
                             echo "Updating Kubernetes manifest"
                             cat deploy/deploy.yaml
-                            sed -i "s/iqbal777\\/todo-app:[0-9]\\+/iqbal777\\/todo-app:${IMAGE_TAG}/" deploy/deploy.yaml
+                            sed -i "s/iqbal777\\/todo-list:[0-9]\\+/iqbal777\\/todo-list:${IMAGE_TAG}/" deploy/deploy.yaml
                             cat deploy/deploy.yaml
                             git add .
                             git commit -m "Updated deploy.yaml for version ${IMAGE_TAG}"
