@@ -7,24 +7,29 @@
 #EXPOSE 8000
 #CMD ["python","manage.py","runserver","0.0.0.0:8000"]
 
+# Use an official Python runtime as a parent image
 FROM python:3
 
-# Install distutils and other dependencies
+# Set the working directory in the container
+WORKDIR /app
+
+# Install dependencies
 RUN apt-get update && apt-get install -y python3-distutils
 
-# Install Django
+# Install Django and any other dependencies directly
 RUN pip install django==3.2
 
-# Copy your project files
+# Copy the application code
 COPY . .
 
 # Run migrations
 RUN python manage.py migrate
 
-# Expose port
+# Expose port 8000
 EXPOSE 8000
 
-# Command to run the app
+# Run the application
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
 
 
