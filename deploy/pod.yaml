@@ -5,6 +5,6 @@ metadata:
 spec:
   containers:
   - name: todo-app
-    image: iqbal777/todo-list:20
+    image: iqbal777/todo-list:22
     ports:
     - containerPort: 8000
