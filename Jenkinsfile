@@ -1,6 +1,6 @@
 pipeline {
     agent any
-     
+    
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
@@ -51,16 +51,25 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'github-access', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        sh '''
-                        cat deploy/deploy.yaml
-                        ls -l deploy/
-                        sed -i'' "s/${BUILD_NUMBER-1}/${BUILD_NUMBER}/g" deploy/deploy.yaml
-                        cat deploy/deploy.yaml
-                        git add .
-                        git commit -m 'Updated deploy.yaml for version ${BUILD_NUMBER}'
-                        git remote -v
-                        git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/shamim-iq/cicd-end-to-end.git HEAD:main
-                        '''                        
+                        
+                        // Check if the commit was made by Jenkins
+                        def isJenkinsCommit = sh(script: "git log -1 --pretty=%an", returnStdout: true).trim() == "Jenkins"
+                        
+                        if (!isJenkinsCommit) {
+                            sh '''
+                            echo "Updating Kubernetes manifest"
+                            cat deploy/deploy.yaml
+                            ls -l deploy/
+                            sed -i "s/${BUILD_NUMBER-1}/${BUILD_NUMBER}/g" deploy/deploy.yaml
+                            cat deploy/deploy.yaml
+                            git add .
+                            git commit -m 'Updated deploy.yaml for version ${BUILD_NUMBER}'
+                            git remote -v
+                            git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/shamim-iq/cicd-end-to-end.git HEAD:main
+                            '''
+                        } else {
+                            echo "Skipping Git push to prevent infinite loop triggered by Jenkins commit"
+                        }
                     }
                 }
             }
