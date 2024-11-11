@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: todo
-        image: iqbal777/todo-list:25
+        image: iqbal777/todo-list:27
         ports:
         - containerPort: 8000
