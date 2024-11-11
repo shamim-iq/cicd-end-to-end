@@ -14,10 +14,12 @@ FROM python:3
 WORKDIR /app
 
 # Install dependencies
-RUN apt-get update && apt-get install -y python3-distutils
+#RUN apt-get update && apt-get install -y python3-distutils
+RUN apt-get update
 
 # Install Django and any other dependencies directly
 RUN pip install django==3.2
+RUN pip install setuptools
 
 # Copy the application code
 COPY . .
